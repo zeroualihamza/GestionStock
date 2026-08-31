@@ -46,4 +46,31 @@ public class StockDao {
 
         return items;
     }
+
+    public void insert(StockItem item) throws SQLException {
+
+        Connection connection = Database.connect();
+
+        String sql = "INSERT INTO stock(num_com, date_com, ville, article, pointure, prix_vente, prix_achat, prix_livr, benefice, date_livr, note) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        java.sql.PreparedStatement statement = connection.prepareStatement(sql);
+
+        statement.setInt(1, item.getNumeroCommande());
+        statement.setDate(2, java.sql.Date.valueOf(item.getDateCommande()));
+        statement.setString(3, item.getVille());
+        statement.setString(4, item.getArticle());
+        statement.setInt(5, item.getPointure());
+        statement.setInt(6, item.getPrixVente());
+        statement.setInt(7, item.getPrixAchat());
+        statement.setInt(8, item.getPrixLivraison());
+        statement.setInt(9, item.getBenefice());
+        statement.setDate(10, java.sql.Date.valueOf(item.getDateLivraison()));
+        statement.setString(11, item.getNote());
+
+        statement.executeUpdate();
+
+        statement.close();
+        connection.close();
+    }
 }
