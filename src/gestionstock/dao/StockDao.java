@@ -118,4 +118,52 @@ public class StockDao {
         statement.close();
         connection.close();
     }
+
+    public ArrayList<StockItem> search(String numeroCommande, String note) throws SQLException {
+
+        ArrayList<StockItem> items = new ArrayList<>();
+
+        Connection connection = Database.connect();
+
+        String sql = "SELECT * FROM stock WHERE 1=1";
+
+        if (!numeroCommande.isEmpty()) {
+            sql = sql + " AND num_com = " + numeroCommande;
+        }
+
+        if (!note.isEmpty()) {
+            sql = sql + " AND note = '" + note + "'";
+        }
+
+        sql = sql + " ORDER BY id DESC";
+
+        Statement statement = connection.createStatement();
+
+        ResultSet result = statement.executeQuery(sql);
+
+        while (result.next()) {
+            StockItem item = new StockItem(
+                    result.getInt("id"),
+                    result.getInt("num_com"),
+                    result.getDate("date_com").toLocalDate(),
+                    result.getString("ville"),
+                    result.getString("article"),
+                    result.getInt("pointure"),
+                    result.getInt("prix_vente"),
+                    result.getInt("prix_achat"),
+                    result.getInt("prix_livr"),
+                    result.getInt("benefice"),
+                    result.getDate("date_livr").toLocalDate(),
+                    result.getString("note")
+            );
+
+            items.add(item);
+        }
+
+        result.close();
+        statement.close();
+        connection.close();
+
+        return items;
+    }
 }
