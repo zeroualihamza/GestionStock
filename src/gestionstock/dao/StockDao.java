@@ -102,4 +102,20 @@ public class StockDao {
         statement.close();
         connection.close();
     }
+
+    public void delete(int id) throws SQLException {
+
+        Connection connection = Database.connect();
+
+        String sql = "DELETE FROM stock WHERE id = ?";
+
+        java.sql.PreparedStatement statement = connection.prepareStatement(sql);
+
+        statement.setInt(1, id);
+
+        statement.executeUpdate();
+
+        statement.close();
+        connection.close();
+    }
 }
