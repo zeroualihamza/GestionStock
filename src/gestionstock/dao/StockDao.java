@@ -127,19 +127,27 @@ public class StockDao {
 
         String sql = "SELECT * FROM stock WHERE 1=1";
 
+        ArrayList<Object> params = new ArrayList<>();
+
         if (!numeroCommande.isEmpty()) {
-            sql = sql + " AND num_com = " + numeroCommande;
+            sql = sql + " AND num_com = ?";
+            params.add(Integer.parseInt(numeroCommande));
         }
 
         if (!note.isEmpty()) {
-            sql = sql + " AND note = '" + note + "'";
+            sql = sql + " AND note = ?";
+            params.add(note);
         }
 
         sql = sql + " ORDER BY id DESC";
 
-        Statement statement = connection.createStatement();
+        java.sql.PreparedStatement statement = connection.prepareStatement(sql);
 
-        ResultSet result = statement.executeQuery(sql);
+        for (int i = 0; i < params.size(); i++) {
+            statement.setObject(i + 1, params.get(i));
+        }
+
+        ResultSet result = statement.executeQuery();
 
         while (result.next()) {
             StockItem item = new StockItem(
