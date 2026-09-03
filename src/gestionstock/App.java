@@ -1,7 +1,6 @@
 package gestionstock;
 
 import gestionstock.dao.StockDao;
-import gestionstock.model.StockItem;
 
 import java.util.ArrayList;
 
@@ -11,15 +10,10 @@ public class App {
         StockDao dao = new StockDao();
 
         try {
-            ArrayList<StockItem> items = dao.search("1002", "Livree");
+            ArrayList<String> notes = dao.findNotes();
 
-            for (StockItem item : items) {
-                System.out.println(
-                        item.getId() + " - "
-                                + item.getNumeroCommande() + " - "
-                                + item.getArticle() + " - "
-                                + item.getNote()
-                );
+            for (String note : notes) {
+                System.out.println("Note : " + note);
             }
 
         } catch (Exception e) {

@@ -174,4 +174,27 @@ public class StockDao {
 
         return items;
     }
+
+    public ArrayList<String> findNotes() throws SQLException {
+
+        ArrayList<String> notes = new ArrayList<>();
+
+        Connection connection = Database.connect();
+
+        String sql = "SELECT DISTINCT note FROM stock WHERE note IS NOT NULL AND note <> '' ORDER BY note";
+
+        java.sql.PreparedStatement statement = connection.prepareStatement(sql);
+
+        ResultSet result = statement.executeQuery();
+
+        while (result.next()) {
+            notes.add(result.getString("note"));
+        }
+
+        result.close();
+        statement.close();
+        connection.close();
+
+        return notes;
+    }
 }
