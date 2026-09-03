@@ -197,4 +197,38 @@ public class StockDao {
 
         return notes;
     }
+
+    public int[] totalsByDate(java.time.LocalDate date) throws SQLException {
+
+        Connection connection = Database.connect();
+
+        String sql = "SELECT "
+                + "COALESCE(SUM(prix_vente), 0), "
+                + "COALESCE(SUM(prix_achat), 0), "
+                + "COALESCE(SUM(prix_livr), 0), "
+                + "COALESCE(SUM(benefice), 0) "
+                + "FROM stock "
+                + "WHERE date_com = ?";
+
+        java.sql.PreparedStatement statement = connection.prepareStatement(sql);
+
+        statement.setDate(1, java.sql.Date.valueOf(date));
+
+        ResultSet result = statement.executeQuery();
+
+        int[] totals = new int[4];
+
+        if (result.next()) {
+            totals[0] = result.getInt(1); // total prix vente
+            totals[1] = result.getInt(2); // total prix achat
+            totals[2] = result.getInt(3); // total livraison
+            totals[3] = result.getInt(4); // total benefice
+        }
+
+        result.close();
+        statement.close();
+        connection.close();
+
+        return totals;
+    }
 }

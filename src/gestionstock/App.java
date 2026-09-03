@@ -2,7 +2,7 @@ package gestionstock;
 
 import gestionstock.dao.StockDao;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 
 public class App {
     public static void main(String[] args) {
@@ -10,11 +10,12 @@ public class App {
         StockDao dao = new StockDao();
 
         try {
-            ArrayList<String> notes = dao.findNotes();
+            int[] totals = dao.totalsByDate(LocalDate.of(2026, 8, 31));
 
-            for (String note : notes) {
-                System.out.println("Note : " + note);
-            }
+            System.out.println("Total prix vente : " + totals[0] + " Dhs");
+            System.out.println("Total prix achat : " + totals[1] + " Dhs");
+            System.out.println("Total livraison : " + totals[2] + " Dhs");
+            System.out.println("Total benefice : " + totals[3] + " Dhs");
 
         } catch (Exception e) {
             System.out.println("Erreur : " + e.getMessage());
