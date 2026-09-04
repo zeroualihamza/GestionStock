@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public final class Database {
 
     private static final String URL =
-            "jdbc:mysql://localhost:3306/gestion_de_stock?useSSL=false&useUnicode=true&characterEncoding=UTF-8";
+            "jdbc:mysql://localhost:3306/gestion_de_stock?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8";
 
     private static final String USER = "root";
     private static final String PASSWORD = "Zrewlate";
