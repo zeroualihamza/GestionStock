@@ -94,7 +94,9 @@ public class LoginFrame extends JFrame {
         String password = new String(passwordField.getPassword());
 
         if (username.equals("admin") && password.equals("admin")) {
-            JOptionPane.showMessageDialog(this, "Connexion reussie !");
+            MainFrame mainFrame = new MainFrame();
+            mainFrame.setVisible(true);
+            dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Identifiants incorrects !");
             passwordField.setText("");
