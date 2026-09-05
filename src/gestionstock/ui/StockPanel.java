@@ -103,6 +103,10 @@ public class StockPanel extends JPanel {
             JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
             StockFormDialog dialog = new StockFormDialog(parent);
             dialog.setVisible(true);
+
+            if (dialog.isSaved()) {
+                loadStockItems();
+            }
         });
 
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));

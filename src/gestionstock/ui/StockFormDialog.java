@@ -1,7 +1,11 @@
 package gestionstock.ui;
 
+import gestionstock.dao.StockDao;
+import gestionstock.model.StockItem;
+
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
 
 public class StockFormDialog extends JDialog {
 
@@ -17,8 +21,14 @@ public class StockFormDialog extends JDialog {
     private JTextField dateLivraisonField;
     private JTextField noteField;
 
+    private StockDao stockDao;
+    private boolean saved;
+
     public StockFormDialog(JFrame parent) {
         super(parent, "Commande stock", true);
+
+        stockDao = new StockDao();
+        saved = false;
 
         setSize(460, 540);
         setLocationRelativeTo(parent);
@@ -69,6 +79,7 @@ public class StockFormDialog extends JDialog {
         JButton cancelButton = new JButton("Annuler");
 
         calculateButton.addActionListener(e -> calculateBenefit());
+        saveButton.addActionListener(e -> saveStockItem());
         cancelButton.addActionListener(e -> dispose());
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 5));
@@ -81,6 +92,10 @@ public class StockFormDialog extends JDialog {
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         add(mainPanel);
+    }
+
+    public boolean isSaved() {
+        return saved;
     }
 
     private void addFormRow(JPanel panel, GridBagConstraints c, int row, String label, JTextField field) {
@@ -107,6 +122,36 @@ public class StockFormDialog extends JDialog {
 
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Prix vente, prix achat et prix livraison doivent etre des nombres.");
+        }
+    }
+
+    private void saveStockItem() {
+        try {
+            calculateBenefit();
+
+            StockItem item = new StockItem(
+                    0,
+                    Integer.parseInt(numeroField.getText().trim()),
+                    LocalDate.parse(dateCommandeField.getText().trim()),
+                    villeField.getText().trim(),
+                    articleField.getText().trim(),
+                    Integer.parseInt(pointureField.getText().trim()),
+                    Integer.parseInt(prixVenteField.getText().trim()),
+                    Integer.parseInt(prixAchatField.getText().trim()),
+                    Integer.parseInt(prixLivraisonField.getText().trim()),
+                    Integer.parseInt(beneficeField.getText().trim()),
+                    LocalDate.parse(dateLivraisonField.getText().trim()),
+                    noteField.getText().trim()
+            );
+
+            stockDao.insert(item);
+            saved = true;
+
+            JOptionPane.showMessageDialog(this, "Commande ajoutee avec succes !");
+            dispose();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erreur : " + e.getMessage());
         }
     }
 }
