@@ -94,8 +94,24 @@ public class StockPanel extends JPanel {
         topPanel.add(titleLabel, BorderLayout.NORTH);
         topPanel.add(searchPanel, BorderLayout.CENTER);
 
+        JButton addButton = new JButton("Ajouter");
+        JButton editButton = new JButton("Modifier");
+        JButton deleteButton = new JButton("Supprimer");
+        JButton refreshButtonBottom = new JButton("Actualiser");
+
+        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
+        actionPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+
+        actionPanel.add(addButton);
+        actionPanel.add(editButton);
+        actionPanel.add(deleteButton);
+        actionPanel.add(refreshButtonBottom);
+
+        refreshButtonBottom.addActionListener(e -> loadStockItems());
+
         add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
+        add(actionPanel, BorderLayout.SOUTH);
 
         loadStockItems();
     }
