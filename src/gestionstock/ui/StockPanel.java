@@ -99,6 +99,12 @@ public class StockPanel extends JPanel {
         JButton deleteButton = new JButton("Supprimer");
         JButton refreshButtonBottom = new JButton("Actualiser");
 
+        addButton.addActionListener(e -> {
+            JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+            StockFormDialog dialog = new StockFormDialog(parent);
+            dialog.setVisible(true);
+        });
+
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
         actionPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
