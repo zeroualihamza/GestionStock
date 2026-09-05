@@ -22,12 +22,18 @@ public class StockFormDialog extends JDialog {
     private JTextField noteField;
 
     private StockDao stockDao;
+    private StockItem currentItem;
     private boolean saved;
 
     public StockFormDialog(JFrame parent) {
+        this(parent, null);
+    }
+
+    public StockFormDialog(JFrame parent, StockItem item) {
         super(parent, "Commande stock", true);
 
         stockDao = new StockDao();
+        currentItem = item;
         saved = false;
 
         setSize(460, 540);
@@ -37,7 +43,7 @@ public class StockFormDialog extends JDialog {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
-        JLabel titleLabel = new JLabel("Commande stock");
+        JLabel titleLabel = new JLabel(item == null ? "Ajouter une commande" : "Modifier une commande");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
@@ -73,6 +79,10 @@ public class StockFormDialog extends JDialog {
         addFormRow(formPanel, c, 8, "Benefice", beneficeField);
         addFormRow(formPanel, c, 9, "Date livraison", dateLivraisonField);
         addFormRow(formPanel, c, 10, "Note", noteField);
+
+        if (item != null) {
+            fillForm(item);
+        }
 
         JButton calculateButton = new JButton("Calculer benefice");
         JButton saveButton = new JButton("Enregistrer");
@@ -110,6 +120,20 @@ public class StockFormDialog extends JDialog {
         panel.add(field, c);
     }
 
+    private void fillForm(StockItem item) {
+        numeroField.setText(String.valueOf(item.getNumeroCommande()));
+        dateCommandeField.setText(String.valueOf(item.getDateCommande()));
+        villeField.setText(item.getVille());
+        articleField.setText(item.getArticle());
+        pointureField.setText(String.valueOf(item.getPointure()));
+        prixVenteField.setText(String.valueOf(item.getPrixVente()));
+        prixAchatField.setText(String.valueOf(item.getPrixAchat()));
+        prixLivraisonField.setText(String.valueOf(item.getPrixLivraison()));
+        beneficeField.setText(String.valueOf(item.getBenefice()));
+        dateLivraisonField.setText(String.valueOf(item.getDateLivraison()));
+        noteField.setText(item.getNote());
+    }
+
     private void calculateBenefit() {
         try {
             int prixVente = Integer.parseInt(prixVenteField.getText().trim());
@@ -129,8 +153,14 @@ public class StockFormDialog extends JDialog {
         try {
             calculateBenefit();
 
+            int id = 0;
+
+            if (currentItem != null) {
+                id = currentItem.getId();
+            }
+
             StockItem item = new StockItem(
-                    0,
+                    id,
                     Integer.parseInt(numeroField.getText().trim()),
                     LocalDate.parse(dateCommandeField.getText().trim()),
                     villeField.getText().trim(),
@@ -144,10 +174,15 @@ public class StockFormDialog extends JDialog {
                     noteField.getText().trim()
             );
 
-            stockDao.insert(item);
-            saved = true;
+            if (currentItem == null) {
+                stockDao.insert(item);
+                JOptionPane.showMessageDialog(this, "Commande ajoutee avec succes !");
+            } else {
+                stockDao.update(item);
+                JOptionPane.showMessageDialog(this, "Commande modifiee avec succes !");
+            }
 
-            JOptionPane.showMessageDialog(this, "Commande ajoutee avec succes !");
+            saved = true;
             dispose();
 
         } catch (Exception e) {

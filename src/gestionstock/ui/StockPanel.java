@@ -109,6 +109,23 @@ public class StockPanel extends JPanel {
             }
         });
 
+        editButton.addActionListener(e -> {
+            StockItem selectedItem = getSelectedStockItem();
+
+            if (selectedItem == null) {
+                JOptionPane.showMessageDialog(this, "Selectionne une commande a modifier.");
+                return;
+            }
+
+            JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
+            StockFormDialog dialog = new StockFormDialog(parent, selectedItem);
+            dialog.setVisible(true);
+
+            if (dialog.isSaved()) {
+                loadStockItems();
+            }
+        });
+
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
         actionPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
@@ -183,5 +200,30 @@ public class StockPanel extends JPanel {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Erreur de recherche : " + e.getMessage());
         }
+    }
+
+    private StockItem getSelectedStockItem() {
+        int selectedRow = table.getSelectedRow();
+
+        if (selectedRow == -1) {
+            return null;
+        }
+
+        int row = table.convertRowIndexToModel(selectedRow);
+
+        return new StockItem(
+                Integer.parseInt(tableModel.getValueAt(row, 0).toString()),
+                Integer.parseInt(tableModel.getValueAt(row, 1).toString()),
+                java.time.LocalDate.parse(tableModel.getValueAt(row, 2).toString()),
+                tableModel.getValueAt(row, 3).toString(),
+                tableModel.getValueAt(row, 4).toString(),
+                Integer.parseInt(tableModel.getValueAt(row, 5).toString()),
+                Integer.parseInt(tableModel.getValueAt(row, 6).toString()),
+                Integer.parseInt(tableModel.getValueAt(row, 7).toString()),
+                Integer.parseInt(tableModel.getValueAt(row, 8).toString()),
+                Integer.parseInt(tableModel.getValueAt(row, 9).toString()),
+                java.time.LocalDate.parse(tableModel.getValueAt(row, 10).toString()),
+                tableModel.getValueAt(row, 11).toString()
+        );
     }
 }
