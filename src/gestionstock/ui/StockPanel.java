@@ -13,11 +13,58 @@ public class StockPanel extends JPanel {
     private JTable table;
     private DefaultTableModel tableModel;
     private StockDao stockDao;
+    private JTextField searchNumeroField;
+    private JTextField searchNoteField;
 
     public StockPanel() {
         setLayout(new BorderLayout());
 
         stockDao = new StockDao();
+
+        JPanel searchPanel = new JPanel(new GridBagLayout());
+        searchPanel.setBorder(BorderFactory.createEmptyBorder(5, 15, 12, 15));
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.insets = new Insets(4, 6, 4, 6);
+        c.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel numeroLabel = new JLabel("Num commande :");
+        searchNumeroField = new JTextField();
+
+        JLabel noteLabel = new JLabel("Note :");
+        searchNoteField = new JTextField();
+
+        JButton searchButton = new JButton("Rechercher");
+        JButton refreshButton = new JButton("Actualiser");
+
+        searchButton.addActionListener(e -> searchStockItems());
+        refreshButton.addActionListener(e -> loadStockItems());
+
+        c.gridy = 0;
+
+        c.gridx = 0;
+        c.weightx = 0;
+        searchPanel.add(numeroLabel, c);
+
+        c.gridx = 1;
+        c.weightx = 1;
+        searchPanel.add(searchNumeroField, c);
+
+        c.gridx = 2;
+        c.weightx = 0;
+        searchPanel.add(noteLabel, c);
+
+        c.gridx = 3;
+        c.weightx = 1;
+        searchPanel.add(searchNoteField, c);
+
+        c.gridx = 4;
+        c.weightx = 0;
+        searchPanel.add(searchButton, c);
+
+        c.gridx = 5;
+        c.weightx = 0;
+        searchPanel.add(refreshButton, c);
 
         JLabel titleLabel = new JLabel("Gestion du Stock");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
@@ -43,7 +90,11 @@ public class StockPanel extends JPanel {
 
         JScrollPane scrollPane = new JScrollPane(table);
 
-        add(titleLabel, BorderLayout.NORTH);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(titleLabel, BorderLayout.NORTH);
+        topPanel.add(searchPanel, BorderLayout.CENTER);
+
+        add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
 
         loadStockItems();
@@ -74,6 +125,37 @@ public class StockPanel extends JPanel {
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Erreur de chargement : " + e.getMessage());
+        }
+    }
+
+    private void searchStockItems() {
+        try {
+            ArrayList<StockItem> items = stockDao.search(
+                    searchNumeroField.getText().trim(),
+                    searchNoteField.getText().trim()
+            );
+
+            tableModel.setRowCount(0);
+
+            for (StockItem item : items) {
+                tableModel.addRow(new Object[]{
+                        item.getId(),
+                        item.getNumeroCommande(),
+                        item.getDateCommande(),
+                        item.getVille(),
+                        item.getArticle(),
+                        item.getPointure(),
+                        item.getPrixVente(),
+                        item.getPrixAchat(),
+                        item.getPrixLivraison(),
+                        item.getBenefice(),
+                        item.getDateLivraison(),
+                        item.getNote()
+                });
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erreur de recherche : " + e.getMessage());
         }
     }
 }
