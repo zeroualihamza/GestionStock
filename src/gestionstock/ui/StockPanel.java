@@ -126,6 +126,32 @@ public class StockPanel extends JPanel {
             }
         });
 
+        deleteButton.addActionListener(e -> {
+            StockItem selectedItem = getSelectedStockItem();
+
+            if (selectedItem == null) {
+                JOptionPane.showMessageDialog(this, "Selectionne une commande a supprimer.");
+                return;
+            }
+
+            int choice = JOptionPane.showConfirmDialog(
+                    this,
+                    "Voulez-vous vraiment supprimer cette commande ?",
+                    "Confirmation",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (choice == JOptionPane.YES_OPTION) {
+                try {
+                    stockDao.delete(selectedItem.getId());
+                    loadStockItems();
+                    JOptionPane.showMessageDialog(this, "Commande supprimee avec succes !");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Erreur de suppression : " + ex.getMessage());
+                }
+            }
+        });
+
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
         actionPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
