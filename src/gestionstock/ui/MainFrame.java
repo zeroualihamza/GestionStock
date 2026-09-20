@@ -48,6 +48,11 @@ public class MainFrame extends JFrame {
             contentPanel.repaint();
         });
 
+        totalsButton.addActionListener(e -> {
+            TotalsDialog dialog = new TotalsDialog(this);
+            dialog.setVisible(true);
+        });
+
         mainPanel.add(topPanel, BorderLayout.NORTH);
         mainPanel.add(contentPanel, BorderLayout.CENTER);
 
