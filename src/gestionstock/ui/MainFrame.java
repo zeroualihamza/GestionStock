@@ -53,6 +53,13 @@ public class MainFrame extends JFrame {
             dialog.setVisible(true);
         });
 
+        supplierButton.addActionListener(e -> {
+            contentPanel.removeAll();
+            contentPanel.add(new SupplierPanel(), BorderLayout.CENTER);
+            contentPanel.revalidate();
+            contentPanel.repaint();
+        });
+
         mainPanel.add(topPanel, BorderLayout.NORTH);
         mainPanel.add(contentPanel, BorderLayout.CENTER);
 

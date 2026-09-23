@@ -88,6 +88,10 @@ public class StockPanel extends JPanel {
 
         table = new JTable(tableModel);
 
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setWidth(0);
+
         JScrollPane scrollPane = new JScrollPane(table);
 
         JPanel topPanel = new JPanel(new BorderLayout());
